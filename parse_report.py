@@ -23,10 +23,11 @@ def main(argv):
 
 	if not args: return usage()
 
-# create and write header to CSV
+#
+#	Create and write header to CSV
+#
 
 #	csv = open( '16PFs.csv', 'w' )
-#	print( 'UID,Name,IM,IN,AC,A,B,C,E,F,G,H,I,L,M,N,O,Q1,Q2,Q3,Q4,G1,G2,G3,G4,G5', file=csv )
 
 	for filename in args:
 		file = pdftext.get( filename )
@@ -36,20 +37,18 @@ def main(argv):
 			return False
 			 
 		print( parse_report( file ) )
+
 #		print( , file=csv )
 
 	return
 
 def parse_report(pages):
-
 	report_type, pages = [ ( rt, pages.split(rt)[1:] ) for rt in reports if rt in pages ][0]
-		
 	cover = pages[0]
-	page = [ [ i for i, s in enumerate(pages) if k in s ] for k in data_keywords ]
 
-	#
-	#	Getting the ID, Name and Date of the Report
-	#
+#
+#	Getting the ID, Name and Date of the Report
+#
 
 	ID_IS_IC = False
 
@@ -74,13 +73,15 @@ def parse_report(pages):
 	except AttributeError:
 		print( "no date in %s" % ( filename, ) )
 
-	#
-	#	Parse indices out of text
-	#
+#
+#	Parse indices out of text
+#
 
 	basic_profile = {}
 	composite_profile = {}
 	criterion_scores = {}
+
+	page = [ [ i for i, s in enumerate(pages) if k in s ] for k in data_keywords ]
 
 	if page[0]:
 		pf_page = pages[page[0][0]]

@@ -2,5 +2,4 @@
 
 from subprocess import check_output
 
-def get(filename):
-	return check_output(["ps2ascii",filename])
+def get( filename ): return check_output( [ "ps2ascii", filename ] )

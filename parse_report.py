@@ -2,50 +2,14 @@
 
 from __future__ import print_function
 from datetime import datetime
+import sys, csv, re
 
-import sys, re
-import pdftext
-import indices as id
+import indices
+from pdftext import get
 
 reports = ( 'Singapore Student Narrative Report', 'Basic Interpretive Report' )
-data_keywords = ( 'Score Summary', 'Singapore Student Assessment Information', 'Global Factors', 'Criterion Scores' )
 
-def main(argv):
-	import getopt
-
-	def usage():
-		print ( 'usage: %s file ...' % argv[0] )
-		return 100
-	try:
-		( opts, args ) = getopt.getopt( argv[1:], 'd' )
-	except getopt.GetoptError:
-		return usage()
-
-	if not args: return usage()
-
-#
-#	Create and write header to CSV
-#
-
-#	csv = open( '16PFs.csv', 'w' )
-
-	for filename in args:
-		file = pdftext.get( filename )
-
-		if not file:
-			print( "error! no text could be read from %s" % ( filename, ) )
-			return False
-			 
-		print( parse_report( file ) )
-
-#		print( , file=csv )
-
-	return
-
-def parse_report(pages):
-	report_type, pages = [ ( rt, pages.split(rt)[1:] ) for rt in reports if rt in pages ][0]
-	cover = pages[0]
-
+def parse_report_data( filename, cover ):
 #
 #	Getting the ID, Name and Date of the Report
 #
@@ -62,53 +26,63 @@ def parse_report(pages):
 	try:
 		name = re.search( 'Name: (.*)', cover).group(1)
 	except AttributeError:
-		print( "no name in %s" % ( filename, ) )
+		name = ''
+		print( "no name in %s" % ( filename, ), file=sys.stderr )
 
+	report_date = ''
 	try:
 		textdate = re.search( 'Date: ([^\s]* [^\s]* \d*)', cover).group(1)
 		try:
 			report_date = datetime.strptime( textdate, '%B %d, %Y' ).strftime( '%Y-%m-%d' )
 		except ValueError:
-			print( "%s date format unknown" % ( filename, ) )
+			print( "%s date format unknown" % ( filename, ), file=sys.stderr )
 	except AttributeError:
-		print( "no date in %s" % ( filename, ) )
+		print( "no date in %s" % ( filename, ), file=sys.stderr )
 
+	return ( UID, name, report_date )
+
+def parse_report( filename ):
 #
-#	Parse indices out of text
+#	Beef
 #
+	file = get( filename )
 
-	basic_profile = {}
-	composite_profile = {}
-	criterion_scores = {}
+	if not file:
+		print( "error! no text could be read from %s" % ( filename, ), file=sys.stderr )
+		return False
 
-	page = [ [ i for i, s in enumerate(pages) if k in s ] for k in data_keywords ]
+	report_type, pages = [ ( rt, file.split(rt)[1:] ) for rt in reports if rt in file ][0]
 
-	if page[0]:
-		pf_page = pages[page[0][0]]
-	else:
-		pf_page = pages[page[2][0]]
+	return ( parse_report_data( filename, pages[0] ), indices.parse_indices( pages ) )
 
-	basic_profile['16PF'] = [ re.search( '(1?\d) '+t, pf_page ).group(1) for t in id.basic_indices['16PF'] ]
+def main(argv):
+	import getopt
 
-	if page[1]:
-		compositepage = ''.join([ pages[x] for x in page[1] ])
+	def usage():
+		print ( 'usage: %s file ...' % argv[0] )
+		return 100
+	try:
+		( opts, args ) = getopt.getopt( argv[1:], 'd' )
+	except getopt.GetoptError:
+		return usage()
 
-		for k,x in id.composite_indices.iteritems():
-			try:
-				composite_profile[k] = [ re.search( t+' (1?\d.\d)', compositepage).group(1) for t in x ]
-			except AttributeError:
-				pass
+	if not args: return usage()
 
-	if page[2]:
-		basic_profile['Response Style'] = [ re.search( t+' (\d?\d)', pages[page[2][0]] ).group(1) for t in id.basic_indices['Response Style'] ]
-		basic_profile['Global Factors'] = [ re.search( '(1?\d) '+t, pages[page[2][0]] ).group(1) for t in id.basic_indices['Global Factors'] ]
+	header = [ 'ID', 'Name', 'Date' ]
+	header.extend( indices.flatten( indices.basic_short ) )
+	header.extend( indices.flatten( indices.composite_short ) )
+	header.extend( indices.flatten( indices.criterion_short ) )
 
-	if page[3]:
-		compositepage = re.sub( r'.*Criterion Scores.*', '', ''.join([ pages[x] for x in page[3] ]) )
-		verbose_report = ' '.join( re.sub( r'\s\s\d\s\s', r'', compositepage ).split() )
+	with open( 'BIR.csv', 'w' ) as csvfile:
+		CSV = csv.writer( csvfile )
 
-		criterion_scores = { k: [ re.search( t+'.*?\((1?\d)\).', verbose_report ).group(1) for t in x ] for k,x in id.criterion_indices.iteritems() }
+		CSV.writerow(header)
 
-	return ( UID, name, report_date, basic_profile, composite_profile, criterion_scores )
+		for filename in args:
+			report = parse_report( filename )
+			if report:
+				row = list( report[0] )
+				row.extend( [ i for x in report[1] for i in indices.flatten(x) ] ) 
+				CSV.writerow( row ) 
 
-if __name__ == '__main__': sys.exit(main(sys.argv))
+if __name__ == "__main__": main(sys.argv)

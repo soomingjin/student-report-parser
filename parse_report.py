@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 from datetime import datetime
-import sys, csv, re
+import sys, re, csv
 
 import indices
 from pdftext import get
@@ -13,7 +13,6 @@ def parse_report_data( filename, cover ):
 #
 #	Getting the ID, Name and Date of the Report
 #
-
 	UID=''
 	for s in re.findall( r'(U?ID):\s*([^\s]*)', cover):
 		UID = s[1]

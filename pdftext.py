@@ -12,4 +12,6 @@ if __name__ == "__main__":
 	except getopt.GetoptError:
 		pass
 
-	for filename in args: print get( filename )
+	for filename in args: 
+		file = get( filename )
+		if not file: print filename

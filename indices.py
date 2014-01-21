@@ -67,7 +67,6 @@ def search( needle, haystack ):
 		return ''
 
 def extract( haystack, needles, pre, post ):
-
 	if isinstance( needles, dict ):
 		return { k: [ search( pre+t+post, haystack ) for t in x ] for k,x in needles.iteritems() } 
 	else:
@@ -86,12 +85,10 @@ def parse_indices( pages ):
 
 	if page[1]:
 		pf_page = ''.join([ pages[x] for x in page[1] ])
-
 		c_profile = extract( pf_page, composite_indices, '', r' (1?\d.\d)' )
 
 	if page[2]:
 		pf_page = pages[page[2][0]]
-
 		b_profile['Response Style'] = extract( pf_page, basic_indices['Response Style'], '', r' (\d?\d)' )
 		b_profile['Global Factors'] = extract( pf_page, basic_indices['Global Factors'], r'(1?\d) ', '' )
 
@@ -99,8 +96,9 @@ def parse_indices( pages ):
 		compositepage = re.sub( r'.*Criterion Scores.*', '', ''.join([ pages[x] for x in page[3] ]) )
 		verbose_report = ' '.join( re.sub( r'\s\s\d\s\s', r'', compositepage ).split() )
 
-		criterion_scores = extract( verbose_report, criterion_indices, '', r'.*?\((1?\d)\).' )
+		ci = { k: [ re.sub(' ',' ?',t) for t in x ] for k,x in criterion_indices.iteritems() }
+		criterion_scores = extract( verbose_report, ci, '', r'.*?\((1?\d)\).' )
 
 	return ( b_profile, c_profile, criterion_scores )
 
-if __name__ == "__main__": print( flatten(basic_short), flatten(composite_short), flatten(criterion_short) )
+if __name__ == "__main__": pass

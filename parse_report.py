@@ -14,14 +14,11 @@ def parse_report_data( filename, cover ):
 #	Getting the ID, Name and Date of the Report
 #
 
-	ID_IS_IC = False
-
-	for s in re.findall( r'U?ID:\s*([^\s]*)', cover):
-		if 'Date' in s: s = re.split( 'Date', s )[0]
-		if re.findall( r'[stgfSTGF]\d{7}[A-Z]', s ):
-			ID_IS_IC = True
-			UID = s
-		if not ID_IS_IC: UID = s
+	UID=''
+	for s in re.findall( r'(U?ID):\s*([^\s]*)', cover):
+		UID = s[1]
+		if s[0] == 'UID': break 
+		if 'Date' in UID: UID = re.split( 'Date', UID )[0]
 
 	try:
 		name = re.search( 'Name: (.*)', cover).group(1)
@@ -29,17 +26,17 @@ def parse_report_data( filename, cover ):
 		name = ''
 		print( "no name in %s" % ( filename, ), file=sys.stderr )
 
-	report_date = ''
+	r_date = ''
 	try:
 		textdate = re.search( 'Date: ([^\s]* [^\s]* \d*)', cover).group(1)
 		try:
-			report_date = datetime.strptime( textdate, '%B %d, %Y' ).strftime( '%Y-%m-%d' )
+			r_date = datetime.strptime(textdate,'%B %d, %Y').strftime('%Y-%m-%d')
 		except ValueError:
 			print( "%s date format unknown" % ( filename, ), file=sys.stderr )
 	except AttributeError:
 		print( "no date in %s" % ( filename, ), file=sys.stderr )
 
-	return ( UID, name, report_date )
+	return ( UID, name, r_date )
 
 def parse_report( filename ):
 #
@@ -68,21 +65,25 @@ def main(argv):
 
 	if not args: return usage()
 
+	data = []
+
 	header = [ 'ID', 'Name', 'Date' ]
 	header.extend( indices.flatten( indices.basic_short ) )
 	header.extend( indices.flatten( indices.composite_short ) )
 	header.extend( indices.flatten( indices.criterion_short ) )
 
+	data.append( header )
+
+	for filename in args:
+		r = parse_report( filename )
+
+		if r:
+			row = list( r[0] )
+			row.extend( [ i for x in r[1] for i in indices.flatten(x) ] ) 
+			data.append( row )
+
 	with open( 'BIR.csv', 'w' ) as csvfile:
 		CSV = csv.writer( csvfile )
+		for row in data: CSV.writerow(row)
 
-		CSV.writerow(header)
-
-		for filename in args:
-			report = parse_report( filename )
-			if report:
-				row = list( report[0] )
-				row.extend( [ i for x in report[1] for i in indices.flatten(x) ] ) 
-				CSV.writerow( row ) 
-
-if __name__ == "__main__": main(sys.argv)
+if __name__ == "__main__": sys.exit(main(sys.argv))

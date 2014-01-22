@@ -4,7 +4,7 @@ from __future__ import print_function
 from datetime import datetime
 import sys, re, csv
 
-import indices
+import indices as ix
 from pdftext import get
 
 reports = ( 'Singapore Student Narrative Report', 'Basic Interpretive Report' )
@@ -41,15 +41,26 @@ def parse_report( filename ):
 #
 #	Beef
 #
+	print( "Gettimg contents of %s ... " % ( filename, ), end='' )
+
 	file = get( filename )
 
 	if not file:
-		print( "error! no text could be read from %s" % ( filename, ), file=sys.stderr )
+		print( "error! no text in %s" % ( filename, ), file=sys.stderr )
 		return False
+
+	print( "OK" )
 
 	report_type, pages = [ ( rt, file.split(rt)[1:] ) for rt in reports if rt in file ][0]
 
-	return ( parse_report_data( filename, pages[0] ), indices.parse_indices( pages ) )
+	print( "Parsing %s ... " % ( report_type, ), end='' )
+
+	r_d = parse_report_data( filename, pages[0] )
+	r_i = ix.parse_indices( pages )
+
+	print( "OK" )
+
+	return ( r_d, r_i )
 
 def main(argv):
 	import getopt
@@ -57,6 +68,7 @@ def main(argv):
 	def usage():
 		print ( 'usage: %s file ...' % argv[0] )
 		return 100
+
 	try:
 		( opts, args ) = getopt.getopt( argv[1:], 'd' )
 	except getopt.GetoptError:
@@ -67,9 +79,9 @@ def main(argv):
 	data = []
 
 	header = [ 'ID', 'Name', 'Date' ]
-	header.extend( indices.flatten( indices.basic_short ) )
-	header.extend( indices.flatten( indices.composite_short ) )
-	header.extend( indices.flatten( indices.criterion_short ) )
+	header.extend( ix.flatten( ix.basic_short ) )
+	header.extend( ix.flatten( ix.composite_short ) )
+	header.extend( ix.flatten( ix.criterion_short ) )
 
 	data.append( header )
 
@@ -78,7 +90,7 @@ def main(argv):
 
 		if r:
 			row = list( r[0] )
-			row.extend( [ i for x in r[1] for i in indices.flatten(x) ] ) 
+			row.extend( [ i for x in r[1] for i in ix.flatten(x) ] ) 
 			data.append( row )
 
 	with open( 'BIR.csv', 'w' ) as csvfile:

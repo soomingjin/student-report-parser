@@ -4,10 +4,11 @@ Singapore Student Assessment Information:
   - Singapore Student Narrative Report
 
  Innovation:
+   group: 7
   
    Applied Thinking:
     regex: &r 
-     post: (1?\d.\d)
+     post: ' (1?\d.\d)'
     short-pre: AT-
     indices:
      - Creative Potential : { short: CP }
@@ -37,7 +38,8 @@ Singapore Student Assessment Information:
      - Self-Confidence : { short: SC }
   
  Enterprising:
-  
+   group: 8
+
    Leadership Factors:
     regex: *r
     short-pre: LF-

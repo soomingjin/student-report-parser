@@ -76,25 +76,7 @@ def main(argv):
 
 	if not args: return usage()
 
-	data = []
-
-	header = [ 'ID', 'Name', 'Date' ]
-	header.extend( ix.flatten( ix.basic_short ) )
-	header.extend( ix.flatten( ix.composite_short ) )
-	header.extend( ix.flatten( ix.criterion_short ) )
-
-	data.append( header )
-
 	for filename in args:
 		r = parse_report( filename )
-
-		if r:
-			row = list( r[0] )
-			row.extend( [ i for x in r[1] for i in ix.flatten(x) ] ) 
-			data.append( row )
-
-	with open( 'BIR.csv', 'w' ) as csvfile:
-		CSV = csv.writer( csvfile )
-		for row in data: CSV.writerow(row)
 
 if __name__ == "__main__": sys.exit(main(sys.argv))

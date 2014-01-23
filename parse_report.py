@@ -41,19 +41,19 @@ def parse_report( filename ):
 #
 #	Beef
 #
-	print( "Gettimg contents of %s ... " % ( filename, ), end='' )
+	print( "[%s] Reading %s ... " % (datetime.now().strftime('%H:%M:%S'), filename), end='' )
 
 	file = get( filename )
 
 	if not file:
-		print( "error! no text in %s" % ( filename, ), file=sys.stderr )
+		print( "error! No text in %s" % (filename,), file=sys.stderr )
 		return False
 
-	print( "OK" )
+	print( "Ok. ", end='' )
 
 	report_type, pages = [ ( rt, file.split(rt)[1:] ) for rt in reports if rt in file ][0]
 
-	print( "Parsing %s ... " % ( report_type, ), end='' )
+	print( "Parsing %s ... " % (report_type,), end='' )
 
 	r_d = parse_report_data( filename, pages[0] )
 	r_i = ix.parse_indices( pages )

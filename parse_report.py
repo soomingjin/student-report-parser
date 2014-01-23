@@ -39,7 +39,7 @@ def parse_report_data( filename, cover ):
 
 def parse_report( filename ):
 #
-#	Beef
+#	Gets the type of report and indices present
 #
 	print( "[%s] Reading %s ... " % (datetime.now().strftime('%H:%M:%S'), filename), end='' )
 
@@ -69,7 +69,6 @@ def wtf( filename, header, data ):
 		CSV.writerow(header)
 		for row in data: CSV.writerow(row)
 
-
 def main(arg):
 	import getopt
 
@@ -91,7 +90,6 @@ def main(arg):
 	if not args: return usage()
 
 	data = []
-
 
 	for filename in args:
 		r = parse_report( filename )

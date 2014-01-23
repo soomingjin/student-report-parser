@@ -19,19 +19,39 @@ def search( needle, haystack ):
 		return ''
 
 def walk( d, c ):
+	if not isinstance( d, dict ): return ''		
+
 	if 'indices' in d:
 		r = d['regex']
 
 		for i in d['indices']:
-			for ix in i.keys():
+			for ix,id in i.items():
 				if 'sub' in r: ix = re.sub( r.get('sub'), r.get('repl'), ix )
 				v = search( r.get('pre','')+ix+r.get('post',''), c ) 
-				i.values()[0].update( { 'value': v } )
+				id.update( { 'value': v } )
 	else:
-		if isinstance( d, dict ):
-			for k,x in d.items():
-				x = walk( x, c )
+		for k,x in d.items(): x = walk( x, c )
 	return d
+
+def flatten( d ):
+	iidx = []
+	def w( d ):
+		if not isinstance( d, dict ): return ''
+
+		if 'indices' in d:
+			grp = d.get('group')
+			pre = d.get('short-pre','')
+
+			for i in d['indices']:
+				for id in i.values():
+					iidx.append( ( grp, pre+id.get('short'), id.get('value') ) )
+		else:
+			for k,x in d.items(): x = w( x )
+			return d
+	w(d)
+	iidx.sort()
+	return iidx
+
 
 def parse_indices( pages ):
 
@@ -42,7 +62,8 @@ def parse_indices( pages ):
 		compositepage = re.sub( r'.*%s.*' % (k,) , '', ''.join([ pages[x] for x in p ]) )
 		compositepage = ' '.join( re.sub( r'\n+\d\n+', r'', compositepage ).split() )
 
-		print walk( idx, compositepage )
+		idx = walk( idx, compositepage )
 
+	return zip( *flatten( indices ) )[1:]
 
 if __name__ == "__main__": pass

@@ -96,15 +96,12 @@ def main(arg):
 
 		if r:
 			row = list( r[0] )
-			row.extend( [ i for x in r[1] for i in ix.flatten(x) ] )
+			row.extend( r[1][1] )
 			data.append( row )
 
 	if write_out:
 		header = [ 'ID', 'Name', 'Date' ]
-		header.extend( ix.flatten( ix.basic_short ) )
-		header.extend( ix.flatten( ix.composite_short ) )
-		header.extend( ix.flatten( ix.criterion_short ) )
-
+		header.extend( r[1][0] )
 		wtf( write_out, header, data )
 
 if __name__ == "__main__": sys.exit(main(sys.argv))

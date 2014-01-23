@@ -1,9 +1,9 @@
 Singapore Student Assessment Information:
 
  Innovation:
-   group: 7
   
    Applied Thinking:
+    group: 7
     regex: &r 
      post: ' (1?\d.\d)'
     short-pre: AT-
@@ -17,6 +17,7 @@ Singapore Student Assessment Information:
        Intellectual Efficiency : { short: IE }
  
    Motivation to Innovate:
+    group: 7
     regex: *r
     short-pre: MI-
     indices:
@@ -26,7 +27,8 @@ Singapore Student Assessment Information:
        Perfectionism : { short: PF }
        Unrestrained : { short: UR }
 
- Educational Style:
+   Educational Style:
+    group: 7
     regex: *r
     short-pre: ES-
     indices:
@@ -35,9 +37,9 @@ Singapore Student Assessment Information:
        Self-Confidence : { short: SC }
   
  Enterprising:
-   group: 8
 
    Leadership Factors:
+    group: 8
     regex: *r
     short-pre: LF-
     indices:
@@ -48,6 +50,7 @@ Singapore Student Assessment Information:
        Influence : { short: IF }
   
    Business Competencies:
+    group: 8
     regex: *r
     short-pre: BC-
     indices:
@@ -57,7 +60,8 @@ Singapore Student Assessment Information:
        Resilience : { short: RS }
   
  Composite Scores:
+  group: 9
   regex: *r
   indices:
-    - Innovation Composite : { short: IC }
-      Enterprising Composite : { short: EC }
+  - Innovation Composite : { short: IC }
+  - Enterprising Composite : { short: EC }

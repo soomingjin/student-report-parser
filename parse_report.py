@@ -78,7 +78,7 @@ def main(arg):
 		return 100
 
 	try:
-		opts, args = getopt.getopt( arg[1:], 'do:v' ['output-file='] )
+		opts, args = getopt.getopt( arg[1:], 'do:v', ['output-file='] )
 	except getopt.GetoptError:
 		return usage()
 
@@ -86,22 +86,27 @@ def main(arg):
 
 	for o, a in opts:
 		if o in ( "-o", "--output-file" ):
-			write_out = o[1]
+			write_out = a 
 
 	if not args: return usage()
 
 	data = []
+
 
 	for filename in args:
 		r = parse_report( filename )
 
 		if r:
 			row = list( r[0] )
-			row.extend( ix.flatten( r[1] ) )
+			row.extend( [ i for x in r[1] for i in ix.flatten(x) ] )
 			data.append( row )
 
 	if write_out:
-		header = [ 'ID', 'Name', 'Date' ].extend( ix.flatten( ix.read_config() ) )
+		header = [ 'ID', 'Name', 'Date' ]
+		header.extend( ix.flatten( ix.basic_short ) )
+		header.extend( ix.flatten( ix.composite_short ) )
+		header.extend( ix.flatten( ix.criterion_short ) )
+
 		wtf( write_out, header, data )
 
 if __name__ == "__main__": sys.exit(main(sys.argv))

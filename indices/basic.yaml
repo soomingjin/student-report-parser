@@ -1,0 +1,41 @@
+Global Factors:
+ Response Style:
+  group: 1
+  regex:
+   post: ' (\d?\d)'
+  indices:
+  - Impression Management: { short: IM }
+    Infrequency: { short: INF }
+    Acquiescence: { short: ACQ }
+
+ Global Factors:
+  group: 2
+  regex: &r
+   pre: '(1?\d) '
+  indices:
+  - Extraversion: { short: EX }
+    Anxiety: { short: AN }
+    Tough-Mindedness: { short: TM }
+    Independence: { short: IND }
+    Self-Control: { short: SC }
+ 
+ 16PF:
+  group: 3
+  regex: *r
+  indices:
+  - Warmth: { short: A }
+    Reasoning: { short: B }
+    Emotional Stability: { short: C }
+    Dominance: { short: E }
+    Liveliness: { short: F }
+    Rule-Consciousness: { short: G }
+    Social Boldness: { short: H }
+    Sensitivity: { short: I }
+    Vigilance: { short: L }
+    Abstractedness: { short: M }
+    Privateness: { short: N }
+    Apprehension: { short: O }
+    Openness to Change: { short: Q1 }
+    Self-Reliance: { short: Q2 }
+    Perfectionism: { short: Q3 }
+    Tension: { short: Q4 }

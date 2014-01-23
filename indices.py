@@ -58,11 +58,11 @@ def parse_indices( pages ):
 	indices = read_config()
 
 	for k,idx in indices.items():
-		p = [ i for i, s in enumerate(pages) if k in s ]
-		compositepage = re.sub( r'.*%s.*' % (k,) , '', ''.join([ pages[x] for x in p ]) )
-		compositepage = ' '.join( re.sub( r'\n+\d\n+', r'', compositepage ).split() )
 
-		idx = walk( idx, compositepage )
+		p = re.sub( r'.*%s.*' % (k,), '', ''.join( [ x for x in pages if k in x ] ) )
+		p = ' '.join( re.sub( r'\n+\d\n+', r' ', p ).split() )
+
+		idx = walk( idx, p )
 
 	return zip( *flatten( indices ) )[1:]
 

@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 from datetime import datetime
-import sys, re, csv
+import sys, re
 
 import indices as ix
 from pdftext import get
@@ -62,7 +62,15 @@ def parse_report( filename ):
 
 	return ( r_d, r_i )
 
-def main(argv):
+def wtf( filename, header, data ):
+	import csv
+	with open( filename, 'w' ) as csvfile:
+		CSV = csv.writer( csvfile )
+		CSV.writerow(header)
+		for row in data: CSV.writerow(row)
+
+
+def main(arg):
 	import getopt
 
 	def usage():
@@ -70,31 +78,30 @@ def main(argv):
 		return 100
 
 	try:
-		( opts, args ) = getopt.getopt( argv[1:], 'd' )
+		opts, args = getopt.getopt( arg[1:], 'do:v' ['output-file='] )
 	except getopt.GetoptError:
 		return usage()
+
+	write_out = False
+
+	for o, a in opts:
+		if o in ( "-o", "--output-file" ):
+			write_out = o[1]
 
 	if not args: return usage()
 
 	data = []
-
-	header = [ 'ID', 'Name', 'Date' ]
-	header.extend( ix.flatten( ix.basic_short ) )
-	header.extend( ix.flatten( ix.composite_short ) )
-	header.extend( ix.flatten( ix.criterion_short ) )
-
-	data.append( header )
 
 	for filename in args:
 		r = parse_report( filename )
 
 		if r:
 			row = list( r[0] )
-			row.extend( [ i for x in r[1] for i in ix.flatten(x) ] ) 
+			row.extend( ix.flatten( r[1] ) )
 			data.append( row )
 
-	with open( 'BIR.csv', 'w' ) as csvfile:
-		CSV = csv.writer( csvfile )
-		for row in data: CSV.writerow(row)
+	if write_out:
+		header = [ 'ID', 'Name', 'Date' ].extend( ix.flatten( ix.read_config() ) )
+		wtf( write_out, header, data )
 
 if __name__ == "__main__": sys.exit(main(sys.argv))

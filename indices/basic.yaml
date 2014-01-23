@@ -1,6 +1,4 @@
 Global Factors:
- report: [ Basic Interpretive Report, Singapore Student Narrative Report ]
-
  Response Style:
   group: 1
   regex:

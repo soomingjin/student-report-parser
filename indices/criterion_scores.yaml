@@ -1,7 +1,4 @@
 Criterion Scores:
- report:
-  - Basic Interpretive Report
-  - Singapore Student Narrative Report
    
  Emotional Management:
   group: 4
@@ -18,12 +15,12 @@ Criterion Scores:
   short-pre: SD-
   indices:
    - Emotional Expressivity : { short: EE }
-   - Emotional Sensitivity : { short: ES }
-   - Emotional Control : { short: EC }
-   - Social Expressivity : { short: SE }
-   - Social Sensitivity : { short: SS }
-   - Social Control : { short: SC }
-   - Empathy : { short: EP }
+     Emotional Sensitivity : { short: ES }
+     Emotional Control : { short: EC }
+     Social Expressivity : { short: SE }
+     Social Sensitivity : { short: SS }
+     Social Control : { short: SC }
+     Empathy : { short: EP }
 
  Leadership & Enterprising Creativity:
   group: 7
@@ -31,5 +28,5 @@ Criterion Scores:
   short-pre: LE-
   indices:
    - potential for leadership : { short: PL }
-   - potential for creative functioning : { short: PC }
-   - rate of output : { short: RO }
+     potential for creative functioning : { short: PC }
+     rate of output : { short: RO }

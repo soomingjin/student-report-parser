@@ -1,7 +1,4 @@
 Singapore Student Assessment Information:
- report:
-  - Basic Interpretive Report
-  - Singapore Student Narrative Report
 
  Innovation:
    group: 7
@@ -12,30 +9,30 @@ Singapore Student Assessment Information:
     short-pre: AT-
     indices:
      - Creative Potential : { short: CP }
-     - Creative Achievement : { short: CA }
-     - Imagination : { short: IM }
-     - Experimenting : { short: XP }
-     - Investigative : { short: IN }
-     - Abstract Reasoning : { short: AR }
-     - Intellectual Efficiency : { short: IE }
-  
+       Creative Achievement : { short: CA }
+       Imagination : { short: IM }
+       Experimenting : { short: XP }
+       Investigative : { short: IN }
+       Abstract Reasoning : { short: AR }
+       Intellectual Efficiency : { short: IE }
+ 
    Motivation to Innovate:
     regex: *r
     short-pre: MI-
     indices:
      - Openness to Change : { short: OC }
-     - Receptive : { short: RC }
-     - Energized : { short: EN }
-     - Perfectionism : { short: PF }
-     - Unrestrained : { short: UR }
+       Receptive : { short: RC }
+       Energized : { short: EN }
+       Perfectionism : { short: PF }
+       Unrestrained : { short: UR }
 
  Educational Style:
     regex: *r
     short-pre: ES-
     indices:
      - School Achievement : { short: SA }
-     - GPA Potential : { short: GP }
-     - Self-Confidence : { short: SC }
+       GPA Potential : { short: GP }
+       Self-Confidence : { short: SC }
   
  Enterprising:
    group: 8
@@ -45,22 +42,22 @@ Singapore Student Assessment Information:
     short-pre: LF-
     indices:
      - Leadership Potential : { short: LP }
-     - Assertive Leadership : { short: AL }
-     - Facilitative Leadership : { short: FL }
-     - Permissive Leadership : { short: PL }
-     - Influence : { short: IF }
+       Assertive Leadership : { short: AL }
+       Facilitative Leadership : { short: FL }
+       Permissive Leadership : { short: PL }
+       Influence : { short: IF }
   
    Business Competencies:
     regex: *r
     short-pre: BC-
     indices:
      - Enterprising : { short: EN }
-     - Dependability : { short: DP }
-     - Service Orientation : { short: SO }
-     - Resilience : { short: RS }
+       Dependability : { short: DP }
+       Service Orientation : { short: SO }
+       Resilience : { short: RS }
   
  Composite Scores:
   regex: *r
   indices:
     - Innovation Composite : { short: IC }
-    - Enterprising Composite : { short: EC }
+      Enterprising Composite : { short: EC }

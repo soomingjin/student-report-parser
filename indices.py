@@ -32,7 +32,7 @@ def extract( iidx, pages ):
 		r = d['regex']
 		for i in d['indices']:
 			for ix,id in i.items():
-				if 'sub' in r: ix = re.sub( r.get('sub'), r.get('repl'), ix )
+				if 'sub' in r: ix = re.sub( r['sub'], r.get('repl',''), ix )
 				v = search( r.get('pre','')+ix+r.get('post',''), pages ) 
 				id.update( { 'value': v } )
 	return walk( iidx, grab )

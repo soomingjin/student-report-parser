@@ -18,39 +18,37 @@ def search( needle, haystack ):
 	except AttributeError:
 		return ''
 
-def walk( d, c ):
-	if not isinstance( d, dict ): return ''		
+def walk( dd, foo ):
+	if not isinstance( dd, dict ): return ''		
 
-	if 'indices' in d:
+	if 'indices' in dd:
+		foo( dd )
+	else:
+		for k,x in dd.items(): x = walk( x, foo )
+	return dd
+
+def extract( iidx, pages ):
+	def grab( d ):
 		r = d['regex']
-
 		for i in d['indices']:
 			for ix,id in i.items():
 				if 'sub' in r: ix = re.sub( r.get('sub'), r.get('repl'), ix )
-				v = search( r.get('pre','')+ix+r.get('post',''), c ) 
+				v = search( r.get('pre','')+ix+r.get('post',''), pages ) 
 				id.update( { 'value': v } )
-	else:
-		for k,x in d.items(): x = walk( x, c )
-	return d
+	return walk( iidx, grab )
 
-def flatten( d ):
-	iidx = []
-	def w( d ):
-		if not isinstance( d, dict ): return ''
+def flatten( iidx ):
+	def show( d ):
+		grp = d.get('group')
+		pre = d.get('short-pre','')
 
-		if 'indices' in d:
-			grp = d.get('group')
-			pre = d.get('short-pre','')
-
-			for i in d['indices']:
-				for id in i.values():
-					iidx.append( ( grp, pre+id.get('short'), id.get('value') ) )
-		else:
-			for k,x in d.items(): x = w( x )
-			return d
-	w(d)
-	iidx.sort()
-	return iidx
+		for i in d['indices']:
+			for id in i.values():
+				indices.append( ( grp, pre+id.get('short'), id.get('value') ) )
+	indices = []
+	walk( iidx, show )
+	indices.sort()
+	return indices
 
 
 def parse_indices( pages ):
@@ -62,7 +60,7 @@ def parse_indices( pages ):
 		p = re.sub( r'.*%s.*' % (k,), '', ''.join( [ x for x in pages if k in x ] ) )
 		p = ' '.join( re.sub( r'\n+\d\n+', r' ', p ).split() )
 
-		idx = walk( idx, p )
+		idx = extract( idx, p )
 
 	return zip( *flatten( indices ) )[1:]
 

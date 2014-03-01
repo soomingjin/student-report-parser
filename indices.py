@@ -58,7 +58,7 @@ def parse_indices( pages ):
 	for k,idx in indices.items():
 
 		p = re.sub( r'.*%s.*' % (k,), '', ''.join( [ x for x in pages if k in x ] ) )
-		p = ' '.join( re.sub( r'\n+\d\n+', r' ', p ).split() )
+		p = ' '.join( re.sub( r'\n+\s+\d\s+\n+', r' ', p ).split() )
 
 		idx = extract( idx, p )
 
